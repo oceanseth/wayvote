@@ -15,7 +15,7 @@ fi
 # Deploy Lambda functions and basic infrastructure
 echo "📦 Deploying Lambda functions and basic infrastructure..."
 cd lambdas
-serverless deploy --config serverless-basic.yml --stage production
+npx serverless deploy --config serverless-basic.yml --stage production
 echo "✅ Basic infrastructure deployed successfully"
 
 # Get the API Gateway URL

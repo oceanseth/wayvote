@@ -11,7 +11,7 @@ if (-not (Test-Path "README.md")) {
 # Deploy Lambda functions and basic infrastructure
 Write-Host "📦 Deploying Lambda functions and basic infrastructure..." -ForegroundColor Yellow
 Set-Location lambdas
-serverless deploy --config serverless-basic.yml --stage production
+npx serverless deploy --config serverless-basic.yml --stage production
 Write-Host "✅ Basic infrastructure deployed successfully" -ForegroundColor Green
 
 # Get the API Gateway URL

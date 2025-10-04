@@ -42,7 +42,7 @@ jobs:
       - name: Deploy Lambda functions
         run: |
           cd lambdas
-          serverless deploy --config serverless-basic.yml --stage production
+          npx serverless deploy --config serverless-basic.yml --stage production
 
   build-frontend:
     name: Build Frontend
