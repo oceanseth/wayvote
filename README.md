@@ -154,7 +154,7 @@ The deployment is now split into 3 steps to avoid circular dependencies:
    ```bash
    # Step 1: Deploy Lambda and basic infrastructure
    cd lambdas
-   serverless deploy --config serverless-basic.yml --stage production
+   npx serverless deploy --config serverless-basic.yml --stage production
    
    # Step 2: Deploy CloudFront (get API URL from step 1 output)
    aws cloudformation deploy \
