@@ -2,9 +2,9 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'CloudFront distribution for WayVote'
 
 Parameters:
-  ApiGatewayUrl:
+  ApiGatewayRestApiId:
     Type: String
-    Description: 'API Gateway URL'
+    Description: 'API Gateway Rest API ID'
     Default: ''
   
   Stage:
@@ -13,6 +13,24 @@ Parameters:
     Default: 'production'
 
 Resources:
+  # API Gateway Custom Domain
+  ApiGatewayCustomDomain:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: api.wayvote.org
+      CertificateArn: !Sub 'arn:aws:acm:us-east-1:${AWS::AccountId}:certificate/85043eab-f82f-484d-88cc-6d352db8123c'
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  # API Gateway Base Path Mapping
+  ApiGatewayBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      DomainName: !Ref ApiGatewayCustomDomain
+      RestApiId: !Ref ApiGatewayRestApiId
+      Stage: !Ref Stage
+
   # CloudFront Origin Access Control
   WayvoteOriginAccessControl:
     Type: AWS::CloudFront::OriginAccessControl
@@ -40,9 +58,7 @@ Resources:
               HTTPSPort: 443
               OriginProtocolPolicy: http-only
           - Id: APIGatewayOrigin
-            DomainName: !Sub 
-              - '${ApiGatewayUrl}'
-              - ApiGatewayUrl: !Ref ApiGatewayUrl
+            DomainName: api.wayvote.org
             CustomOriginConfig:
               HTTPPort: 443
               HTTPSPort: 443

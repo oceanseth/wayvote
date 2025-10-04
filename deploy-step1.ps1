@@ -14,18 +14,18 @@ Set-Location lambdas
 npx serverless deploy --config serverless-basic.yml --stage production
 Write-Host "✅ Basic infrastructure deployed successfully" -ForegroundColor Green
 
-# Get the API Gateway URL
-Write-Host "🔍 Getting API Gateway URL..." -ForegroundColor Yellow
-$API_URL = aws cloudformation describe-stacks --stack-name wayvote-api-production --query 'Stacks[0].Outputs[?OutputKey==`ApiGatewayUrl`].OutputValue' --output text
+# Get the API Gateway Rest API ID
+Write-Host "🔍 Getting API Gateway Rest API ID..." -ForegroundColor Yellow
+$API_ID = aws cloudformation describe-stacks --stack-name wayvote-api-production --query 'Stacks[0].Outputs[?OutputKey==`ApiGatewayRestApi`].OutputValue' --output text
 
-Write-Host "📡 API Gateway URL: $API_URL" -ForegroundColor Cyan
+Write-Host "📡 API Gateway Rest API ID: $API_ID" -ForegroundColor Cyan
 
-# Save the API URL for step 2
-$API_URL | Out-File -FilePath "../api-gateway-url.txt" -Encoding UTF8
-Write-Host "💾 API Gateway URL saved to api-gateway-url.txt" -ForegroundColor Green
+# Save the API ID for step 2
+$API_ID | Out-File -FilePath "../api-gateway-id.txt" -Encoding UTF8
+Write-Host "💾 API Gateway Rest API ID saved to api-gateway-id.txt" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "✅ Step 1 completed successfully!" -ForegroundColor Green
-Write-Host "📡 API Gateway URL: $API_URL" -ForegroundColor Cyan
+Write-Host "📡 API Gateway Rest API ID: $API_ID" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Next: Run .\deploy-step2.ps1 to deploy CloudFront and Route53" -ForegroundColor Yellow

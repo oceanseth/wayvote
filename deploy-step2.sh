@@ -12,14 +12,14 @@ if [ ! -f "README.md" ]; then
     exit 1
 fi
 
-# Check if API Gateway URL exists
-if [ ! -f "api-gateway-url.txt" ]; then
-    echo "❌ api-gateway-url.txt not found. Please run deploy-step1.sh first"
+# Check if API Gateway ID exists
+if [ ! -f "api-gateway-id.txt" ]; then
+    echo "❌ api-gateway-id.txt not found. Please run deploy-step1.sh first"
     exit 1
 fi
 
-API_URL=$(cat api-gateway-url.txt)
-echo "📡 Using API Gateway URL: $API_URL"
+API_ID=$(cat api-gateway-id.txt)
+echo "📡 Using API Gateway Rest API ID: $API_ID"
 
 # Deploy CloudFront and Route53
 echo "☁️ Deploying CloudFront distribution and Route53..."
@@ -29,7 +29,7 @@ aws cloudformation deploy \
   --template-file cloudfront-template.yml \
   --stack-name wayvote-cloudfront-production \
   --parameter-overrides \
-    ApiGatewayUrl="$API_URL" \
+    ApiGatewayRestApiId="$API_ID" \
     Stage="production" \
   --capabilities CAPABILITY_IAM
 

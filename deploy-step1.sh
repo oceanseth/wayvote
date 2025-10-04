@@ -18,21 +18,21 @@ cd lambdas
 npx serverless deploy --config serverless-basic.yml --stage production
 echo "✅ Basic infrastructure deployed successfully"
 
-# Get the API Gateway URL
-echo "🔍 Getting API Gateway URL..."
-API_URL=$(aws cloudformation describe-stacks \
+# Get the API Gateway Rest API ID
+echo "🔍 Getting API Gateway Rest API ID..."
+API_ID=$(aws cloudformation describe-stacks \
   --stack-name wayvote-api-production \
-  --query 'Stacks[0].Outputs[?OutputKey==`ApiGatewayUrl`].OutputValue' \
+  --query 'Stacks[0].Outputs[?OutputKey==`ApiGatewayRestApi`].OutputValue' \
   --output text)
 
-echo "📡 API Gateway URL: $API_URL"
+echo "📡 API Gateway Rest API ID: $API_ID"
 
-# Save the API URL for step 2
-echo "$API_URL" > ../api-gateway-url.txt
-echo "💾 API Gateway URL saved to api-gateway-url.txt"
+# Save the API ID for step 2
+echo "$API_ID" > ../api-gateway-id.txt
+echo "💾 API Gateway Rest API ID saved to api-gateway-id.txt"
 
 echo ""
 echo "✅ Step 1 completed successfully!"
-echo "📡 API Gateway URL: $API_URL"
+echo "📡 API Gateway Rest API ID: $API_ID"
 echo ""
 echo "Next: Run ./deploy-step2.sh to deploy CloudFront and Route53"

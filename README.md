@@ -156,11 +156,11 @@ The deployment is now split into 3 steps to avoid circular dependencies:
    cd lambdas
    npx serverless deploy --config serverless-basic.yml --stage production
    
-   # Step 2: Deploy CloudFront (get API URL from step 1 output)
+   # Step 2: Deploy CloudFront (get API Gateway Rest API ID from step 1 output)
    aws cloudformation deploy \
      --template-file cloudfront-template.yml \
      --stack-name wayvote-cloudfront-production \
-     --parameter-overrides ApiGatewayUrl="YOUR_API_URL" Stage="production" \
+     --parameter-overrides ApiGatewayRestApiId="YOUR_API_ID" Stage="production" \
      --capabilities CAPABILITY_IAM
    
    # Step 3: Build and deploy frontend

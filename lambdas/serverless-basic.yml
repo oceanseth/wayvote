@@ -24,20 +24,9 @@ provider:
           Resource: "*"
 
 plugins:
-  - serverless-domain-manager
   - serverless-s3-sync
 
 custom:
-  # Domain configuration
-  customDomain:
-    domainName: api.wayvote.org
-    basePath: ''
-    stage: ${self:provider.stage}
-    createRoute53Record: true
-    certificateName: 85043eab-f82f-484d-88cc-6d352db8123c
-    endpointType: 'regional'
-    securityPolicy: tls_1_2
-    autoDomain: false
 
   # S3 configuration for static site
   s3Sync:
