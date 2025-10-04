@@ -73,6 +73,110 @@ A modern, secure, and transparent democratic voting platform built with React, A
 - `GET /api/` - API information and available endpoints
 - `POST /api/helloworld` - Test endpoint that returns posted content
 
+#### Voting System Endpoints
+
+**Get Rankings**
+```http
+POST /api/getRankings
+Content-Type: application/json
+
+{
+  "ids": ["content1", "content2", "content3"],
+  "customRanking": [
+    {
+      "weighName": "IQ",
+      "weighValue": 10
+    },
+    {
+      "weighName": "Experience",
+      "weighValue": 5
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+[
+  {
+    "contentId": "content1",
+    "rank": 1
+  },
+  {
+    "contentId": "content2", 
+    "rank": 2
+  },
+  {
+    "contentId": "content3",
+    "rank": 3
+  }
+]
+```
+
+**Upvote Content**
+```http
+POST /api/upVote
+Content-Type: application/json
+
+{
+  "contentId": "content1"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
+
+**Downvote Content**
+```http
+POST /api/downVote
+Content-Type: application/json
+
+{
+  "contentId": "content1"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
+
+#### Custom Ranking Type
+
+The `customRanking` parameter is an array of objects with the following structure:
+
+```typescript
+interface CustomRanking {
+  weighName: string;    // Name of the ranking criteria (e.g., "IQ", "Experience", "Popularity")
+  weighValue: number;   // Weight value for this criteria (higher = more important)
+}
+```
+
+**Example:**
+```json
+[
+  {
+    "weighName": "IQ",
+    "weighValue": 10
+  },
+  {
+    "weighName": "Experience", 
+    "weighValue": 5
+  },
+  {
+    "weighName": "Popularity",
+    "weighValue": 3
+  }
+]
+```
+
+
 Example API call:
 ```bash
 curl -X POST https://api.wayvote.org/helloworld \
