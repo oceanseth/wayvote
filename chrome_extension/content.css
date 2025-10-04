@@ -1,0 +1,165 @@
+/* WayVote Chrome Extension - Content Styles */
+
+.wayvote-voting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+  min-width: 60px;
+}
+
+.wayvote-vote-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.wayvote-upvote,
+.wayvote-downvote {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.wayvote-upvote:hover {
+  background: #ff4500;
+  color: white;
+  border-color: #ff4500;
+}
+
+.wayvote-downvote:hover {
+  background: #7193ff;
+  color: white;
+  border-color: #7193ff;
+}
+
+.wayvote-count {
+  font-size: 12px;
+  font-weight: bold;
+  color: #1a1a1b;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* WayVote indicator for processed posts */
+[data-wayvote-processed] {
+  position: relative;
+}
+
+[data-wayvote-processed]::before {
+  content: "🎯";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 12px;
+  opacity: 0.7;
+  z-index: 1000;
+}
+
+/* Animation for reordered posts */
+.wayvote-reordering {
+  transition: transform 0.3s ease;
+}
+
+/* WayVote settings button */
+.wayvote-settings-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 10000;
+  transition: all 0.2s ease;
+}
+
+.wayvote-settings-btn:hover {
+  background: #ff5722;
+  transform: scale(1.1);
+}
+
+/* Loading indicator */
+.wayvote-loading {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #ff4500;
+  border-radius: 50%;
+  animation: wayvote-spin 1s linear infinite;
+}
+
+@keyframes wayvote-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Tooltip for WayVote elements */
+.wayvote-tooltip {
+  position: relative;
+}
+
+.wayvote-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10001;
+}
+
+.wayvote-tooltip:hover::after {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .wayvote-settings-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .wayvote-voting {
+    min-width: 50px;
+    padding: 6px;
+  }
+  
+  .wayvote-upvote,
+  .wayvote-downvote {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+}

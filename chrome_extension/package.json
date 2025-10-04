@@ -1,0 +1,32 @@
+{
+  "name": "wayvote-chrome-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension for WayVote - Custom Reddit Rankings",
+  "main": "content.js",
+  "scripts": {
+    "build": "echo 'Chrome extension build complete'",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": [
+    "chrome-extension",
+    "reddit",
+    "ranking",
+    "algorithm",
+    "wayvote",
+    "voting",
+    "customization"
+  ],
+  "author": "WayVote Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wayvote/wayvote"
+  },
+  "bugs": {
+    "url": "https://github.com/wayvote/wayvote/issues"
+  },
+  "homepage": "https://wayvote.org",
+  "devDependencies": {},
+  "dependencies": {}
+}

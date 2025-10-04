@@ -1,0 +1,373 @@
+/* WayVote Chrome Extension - Popup Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8f9fa;
+  color: #1a1a1b;
+  line-height: 1.5;
+}
+
+.popup-container {
+  width: 400px;
+  min-height: 500px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.popup-header {
+  background: linear-gradient(135deg, #ff4500, #ff5722);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.logo p {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255,255,255,0.3);
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: rgba(255,255,255,0.8);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Main Content */
+.popup-main {
+  padding: 20px;
+}
+
+.metrics-section h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #1a1a1b;
+}
+
+.section-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Metrics Container */
+.metrics-container {
+  margin-bottom: 20px;
+}
+
+.metric-item {
+  background: #f8f9fa;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.metric-item:hover {
+  border-color: #ff4500;
+  box-shadow: 0 2px 8px rgba(255, 69, 0, 0.1);
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.metric-name {
+  font-weight: 600;
+  color: #1a1a1b;
+  font-size: 14px;
+}
+
+.metric-value {
+  font-weight: bold;
+  color: #ff4500;
+  font-size: 16px;
+  min-width: 40px;
+  text-align: right;
+}
+
+.metric-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider-container {
+  flex: 1;
+  position: relative;
+}
+
+.metric-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e1e5e9;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.metric-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff4500;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.metric-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff4500;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.metric-input {
+  width: 60px;
+  padding: 6px 8px;
+  border: 1px solid #e1e5e9;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.metric-input:focus {
+  outline: none;
+  border-color: #ff4500;
+  box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.1);
+}
+
+/* Add Metric Button */
+.add-metric-btn {
+  width: 100%;
+  padding: 12px;
+  background: #f8f9fa;
+  border: 2px dashed #e1e5e9;
+  border-radius: 8px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-metric-btn:hover {
+  border-color: #ff4500;
+  color: #ff4500;
+  background: rgba(255, 69, 0, 0.05);
+}
+
+/* Actions Section */
+.actions-section {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.apply-btn {
+  flex: 1;
+  padding: 12px;
+  background: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.apply-btn:hover {
+  background: #ff5722;
+  transform: translateY(-1px);
+}
+
+.reset-btn {
+  flex: 1;
+  padding: 12px;
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+  background: #e9ecef;
+  border-color: #ccc;
+}
+
+/* Info Section */
+.info-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.info-section h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #1a1a1b;
+}
+
+.info-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-section li {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  padding-left: 16px;
+  position: relative;
+}
+
+.info-section li::before {
+  content: "•";
+  color: #ff4500;
+  position: absolute;
+  left: 0;
+}
+
+/* Footer */
+.popup-footer {
+  background: #f8f9fa;
+  padding: 16px 20px;
+  text-align: center;
+  border-top: 1px solid #e1e5e9;
+}
+
+.popup-footer p {
+  font-size: 12px;
+  color: #666;
+}
+
+.popup-footer a {
+  color: #ff4500;
+  text-decoration: none;
+}
+
+.popup-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Loading State */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #ff4500;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .popup-container {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+  
+  .actions-section {
+    flex-direction: column;
+  }
+}

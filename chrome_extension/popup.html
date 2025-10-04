@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WayVote Settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="logo">
+        <h1>🎯 WayVote</h1>
+        <p>Custom Reddit Rankings</p>
+      </div>
+      <div class="toggle-container">
+        <label class="toggle-switch">
+          <input type="checkbox" id="enabledToggle" checked>
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Enabled</span>
+      </div>
+    </header>
+
+    <main class="popup-main">
+      <section class="metrics-section">
+        <h2>Ranking Metrics</h2>
+        <p class="section-description">
+          Configure how much weight each metric should have in ranking posts (0-1000)
+        </p>
+        
+        <div class="metrics-container" id="metricsContainer">
+          <!-- Metrics will be dynamically generated here -->
+        </div>
+        
+        <button id="addMetricBtn" class="add-metric-btn">
+          ➕ Create New Metric
+        </button>
+      </section>
+
+      <section class="actions-section">
+        <button id="applyBtn" class="apply-btn">
+          Apply Rankings
+        </button>
+        <button id="resetBtn" class="reset-btn">
+          Reset to Defaults
+        </button>
+      </section>
+
+      <section class="info-section">
+        <h3>How it works</h3>
+        <ul>
+          <li>WayVote analyzes Reddit posts and ranks them based on your custom metrics</li>
+          <li>Higher weights mean that metric has more influence on rankings</li>
+          <li>Posts are reordered automatically as you browse</li>
+          <li>Your votes are sent to the WayVote API for community ranking</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="popup-footer">
+      <p>Visit <a href="https://wayvote.org" target="_blank">wayvote.org</a> for more info</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

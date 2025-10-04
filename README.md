@@ -97,9 +97,11 @@ This project was inspired by [Seth Caldwell's vision](https://www.youtube.com/wa
    ```
 
 ### API Endpoints
+The baseurl of the api is api.wayvote.org
 
-- `GET /api/` - API information and available endpoints
-- `POST /api/helloworld` - Test endpoint that returns posted content
+- `GET /` - API information and available endpoints
+- `POST /helloworld` - Test endpoint that returns posted content
+- `POST /getRankings` - Get rankings for a set of content Ids
 
 #### Voting System Endpoints
 
@@ -111,17 +113,12 @@ Content-Type: application/json
 {
   "ids": ["content1", "content2", "content3"],
   "customRanking": [
-    {
-      "weighName": "IQ",
-      "weighValue": 10
-    },
-    {
-      "weighName": "Experience",
-      "weighValue": 5
-    }
+    {  "IQ": 10 },
+    {  "Critial_Thinking": 5 }
   ]
 }
 ```
+
 
 **Response:**
 ```json
@@ -229,6 +226,17 @@ wayvote/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml          # GitHub Actions deployment
+├── chrome_extension/           # Chrome browser extension
+│   ├── manifest.json          # Extension configuration
+│   ├── content.js             # Reddit integration script
+│   ├── content.css            # Extension styles
+│   ├── popup.html             # Settings popup interface
+│   ├── popup.css              # Popup styles
+│   ├── popup.js               # Popup functionality
+│   ├── background.js          # Background service worker
+│   ├── icons/                 # Extension icons
+│   ├── README.md              # Extension documentation
+│   └── INSTALL.md             # Installation guide
 ├── frontend/                   # React frontend
 │   ├── public/
 │   │   └── index.html
@@ -324,6 +332,12 @@ Set these in your GitHub repository secrets:
 
 ## 🧪 Testing
 
+### Chrome Extension Testing
+1. **Install the extension** (see `chrome_extension/INSTALL.md`)
+2. **Navigate to Reddit** and open the extension popup
+3. **Configure metrics** and test post reordering
+4. **Test custom voting** by clicking the new vote buttons
+
 ### Frontend Testing
 ```bash
 cd frontend
@@ -387,6 +401,14 @@ curl -X POST https://api.wayvote.org/helloworld \
 - ✅ SSL/TLS encryption
 - ✅ Automatic deployments
 - ✅ Domain redirects
+
+### Chrome Extension
+- ✅ Reddit post detection and ID extraction
+- ✅ Custom metric configuration with sliders
+- ✅ Real-time post reordering based on rankings
+- ✅ Custom voting system integration
+- ✅ API integration with WayVote backend
+- ✅ Settings persistence and sync
 
 ## 🔒 Security
 
