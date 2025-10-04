@@ -15,12 +15,7 @@ Parameters:
   WayvoteHostedZoneId:
     Type: String
     Description: 'Route53 Hosted Zone ID for wayvote.org'
-    Default: ''
-  
-  WeighvoteHostedZoneId:
-    Type: String
-    Description: 'Route53 Hosted Zone ID for weighvote.org'
-    Default: ''
+    Default: 'Z03190542Q3Q8WQPEER6Q'
   
   Stage:
     Type: String
@@ -66,6 +61,8 @@ Resources:
         Aliases:
           - wayvote.org
           - www.wayvote.org
+          - weighvote.org
+          - www.weighvote.org
         DefaultRootObject: index.html
         Origins:
           - Id: S3Origin
@@ -85,6 +82,9 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # Managed-CachingDisabled
           OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf # Managed-CORS-S3Origin
+          LambdaFunctionAssociations:
+            - EventType: viewer-request
+              LambdaFunctionARN: arn:aws:lambda:us-east-1:218827615080:function:wayvote-redirect-production:3
         CacheBehaviors:
           - PathPattern: /api/*
             TargetOriginId: APIGatewayOrigin
@@ -136,16 +136,7 @@ Resources:
         DNSName: !GetAtt CloudFrontDistribution.DomainName
         HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
 
-  # Route53 Record for weighvote.org (redirect to wayvote.org)
-  WeighvoteRedirectRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref WeighvoteHostedZoneId
-      Name: weighvote.org
-      Type: A
-      AliasTarget:
-        DNSName: !GetAtt CloudFrontDistribution.DomainName
-        HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
+
 
 Outputs:
   CloudFrontDistributionId:
