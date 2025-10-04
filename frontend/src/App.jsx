@@ -17,7 +17,7 @@ function App() {
 
   const testApiConnection = async () => {
     try {
-      const response = await fetch('/api/')
+      const response = await fetch('https://api.wayvote.org/')
       if (response.ok) {
         setApiStatus('connected')
       } else {
