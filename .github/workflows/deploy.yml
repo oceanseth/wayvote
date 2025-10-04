@@ -168,10 +168,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Configure S3 bucket
+        run: |
+          cd lambdas
+          chmod +x configure-s3-bucket.sh
+          BUCKET_NAME=$(aws cloudformation describe-stacks \
+            --stack-name wayvote-api-production \
+            --query 'Stacks[0].Outputs[?OutputKey==`WayvoteWebsiteBucketName`].OutputValue' \
+            --output text)
+          ./configure-s3-bucket.sh $BUCKET_NAME
+
       - name: Deploy frontend to S3
         run: |
           cd lambdas
-          npx serverless s3sync --config serverless-basic.yml --stage production
+          BUCKET_NAME=$(aws cloudformation describe-stacks \
+            --stack-name wayvote-api-production \
+            --query 'Stacks[0].Outputs[?OutputKey==`WayvoteWebsiteBucketName`].OutputValue' \
+            --output text)
+          aws s3 sync ../frontend/dist s3://$BUCKET_NAME --delete
 
       - name: Invalidate CloudFront cache
         run: |

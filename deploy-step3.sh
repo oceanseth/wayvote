@@ -21,6 +21,15 @@ echo "✅ Frontend built successfully"
 # Deploy to S3
 echo "☁️ Deploying frontend to S3..."
 BUCKET_NAME=$(cat ../s3-bucket-name.txt)
+
+# Configure S3 bucket with policy and CORS
+echo "🔧 Configuring S3 bucket..."
+cd ../lambdas
+chmod +x configure-s3-bucket.sh
+./configure-s3-bucket.sh $BUCKET_NAME
+
+# Deploy frontend files
+echo "📦 Uploading frontend files..."
 aws s3 sync ../frontend/dist s3://$BUCKET_NAME --delete
 echo "✅ Frontend deployed to S3"
 

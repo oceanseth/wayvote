@@ -17,6 +17,14 @@ Write-Host "Frontend built successfully" -ForegroundColor Green
 # Deploy to S3
 Write-Host "Deploying frontend to S3..." -ForegroundColor Yellow
 $BUCKET_NAME = Get-Content "../s3-bucket-name.txt"
+
+# Configure S3 bucket with policy and CORS
+Write-Host "Configuring S3 bucket..." -ForegroundColor Yellow
+Set-Location ../lambdas
+.\configure-s3-bucket.ps1 -BucketName $BUCKET_NAME
+
+# Deploy frontend files
+Write-Host "Uploading frontend files..." -ForegroundColor Yellow
 aws s3 sync ../frontend/dist "s3://$BUCKET_NAME" --delete
 Write-Host "Frontend deployed to S3" -ForegroundColor Green
 
