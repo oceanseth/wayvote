@@ -23,30 +23,7 @@ provider:
             - cloudfront:CreateInvalidation
           Resource: "*"
 
-plugins:
-  - serverless-s3-sync
-
 custom:
-
-  # S3 configuration for static site
-  s3Sync:
-    - bucketName: www.wayvote.org
-      localDir: ../frontend/dist
-      deleteRemoved: true
-      params:
-        - index.html:
-            CacheControl: 'no-cache, no-store, must-revalidate'
-            ContentType: 'text/html'
-        - "*.js":
-            CacheControl: 'public, max-age=31536000'
-        - "*.css":
-            CacheControl: 'public, max-age=31536000'
-        - "*.png":
-            CacheControl: 'public, max-age=31536000'
-        - "*.jpg":
-            CacheControl: 'public, max-age=31536000'
-        - "*.ico":
-            CacheControl: 'public, max-age=31536000'
 
 functions:
   api:
@@ -67,7 +44,7 @@ resources:
     WayvoteWebsiteBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: www.wayvote.org
+        BucketName: !Sub 'wayvote-website-${self:provider.stage}'
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
@@ -77,18 +54,6 @@ resources:
           IgnorePublicAcls: false
           RestrictPublicBuckets: false
 
-    # S3 bucket policy for public read access
-    WayvoteWebsiteBucketPolicy:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        Bucket: !Ref WayvoteWebsiteBucket
-        PolicyDocument:
-          Statement:
-            - Sid: PublicReadGetObject
-              Effect: Allow
-              Principal: '*'
-              Action: 's3:GetObject'
-              Resource: !Sub '${WayvoteWebsiteBucket}/*'
 
   Outputs:
     ApiGatewayRestApi:

@@ -20,8 +20,8 @@ echo "✅ Frontend built successfully"
 
 # Deploy to S3
 echo "☁️ Deploying frontend to S3..."
-cd ../lambdas
-npx serverless s3sync --config serverless-basic.yml --stage production
+BUCKET_NAME=$(cat ../s3-bucket-name.txt)
+aws s3 sync ../frontend/dist s3://$BUCKET_NAME --delete
 echo "✅ Frontend deployed to S3"
 
 # Invalidate CloudFront cache if distribution ID exists

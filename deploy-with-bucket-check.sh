@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Step 1: Deploy basic infrastructure (Lambda + S3 + API Gateway)
+# Enhanced deployment script that handles existing buckets gracefully
 
 set -e
 
-echo "🚀 Step 1: Deploying basic infrastructure..."
+echo "🚀 Starting WayVote deployment with bucket management..."
 
 # Check if we're in the right directory
 if [ ! -f "README.md" ]; then
@@ -12,10 +12,32 @@ if [ ! -f "README.md" ]; then
     exit 1
 fi
 
+STAGE="production"
+BUCKET_NAME="wayvote-website-${STAGE}"
+
+# Check if bucket exists
+echo "🔍 Checking if S3 bucket exists..."
+if aws s3 ls "s3://${BUCKET_NAME}" 2>/dev/null; then
+    echo "✅ Bucket ${BUCKET_NAME} already exists - will reuse it"
+    BUCKET_EXISTS=true
+else
+    echo "📦 Bucket ${BUCKET_NAME} does not exist - will create it"
+    BUCKET_EXISTS=false
+fi
+
 # Deploy Lambda functions and basic infrastructure
 echo "📦 Deploying Lambda functions and basic infrastructure..."
 cd lambdas
-npx serverless deploy --config serverless-basic.yml --stage production
+
+if [ "$BUCKET_EXISTS" = true ]; then
+    echo "⚠️ Skipping bucket creation since it already exists"
+    # Deploy without the bucket resource
+    npx serverless deploy --config serverless-basic.yml --stage production --skip-resources WayvoteWebsiteBucket,WayvoteWebsiteBucketPolicy
+else
+    # Deploy normally (will create the bucket)
+    npx serverless deploy --config serverless-basic.yml --stage production
+fi
+
 echo "✅ Basic infrastructure deployed successfully"
 
 # Get the API Gateway Rest API ID
@@ -27,14 +49,8 @@ API_ID=$(aws cloudformation describe-stacks \
 
 echo "📡 API Gateway Rest API ID: $API_ID"
 
-# Get the S3 Bucket Name
-echo "🔍 Getting S3 Bucket Name..."
-BUCKET_NAME=$(aws cloudformation describe-stacks \
-  --stack-name wayvote-api-production \
-  --query 'Stacks[0].Outputs[?OutputKey==`WayvoteWebsiteBucketName`].OutputValue' \
-  --output text)
-
-echo "📡 S3 Bucket Name: $BUCKET_NAME"
+# Get the S3 Bucket Name (use the known bucket name)
+echo "📡 Using S3 Bucket Name: $BUCKET_NAME"
 
 # Save the values for step 2
 echo "$API_ID" > ../api-gateway-id.txt

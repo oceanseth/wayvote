@@ -8,20 +8,27 @@ if (-not (Test-Path "README.md")) {
     exit 1
 }
 
-# Check if API Gateway ID exists
+# Check if required files exist
 if (-not (Test-Path "api-gateway-id.txt")) {
     Write-Host "❌ api-gateway-id.txt not found. Please run deploy-step1.ps1 first" -ForegroundColor Red
     exit 1
 }
 
+if (-not (Test-Path "s3-bucket-name.txt")) {
+    Write-Host "❌ s3-bucket-name.txt not found. Please run deploy-step1.ps1 first" -ForegroundColor Red
+    exit 1
+}
+
 $API_ID = Get-Content "api-gateway-id.txt"
+$BUCKET_NAME = Get-Content "s3-bucket-name.txt"
 Write-Host "📡 Using API Gateway Rest API ID: $API_ID" -ForegroundColor Cyan
+Write-Host "📡 Using S3 Bucket Name: $BUCKET_NAME" -ForegroundColor Cyan
 
 # Deploy CloudFront and Route53
 Write-Host "☁️ Deploying CloudFront distribution and Route53..." -ForegroundColor Yellow
 Set-Location lambdas
 
-aws cloudformation deploy --template-file cloudfront-template.yml --stack-name wayvote-cloudfront-production --parameter-overrides ApiGatewayRestApiId="$API_ID" Stage="production" --capabilities CAPABILITY_IAM
+aws cloudformation deploy --template-file cloudfront-template.yml --stack-name wayvote-cloudfront-production --parameter-overrides ApiGatewayRestApiId="$API_ID" S3BucketName="$BUCKET_NAME" WayvoteHostedZoneId="Z03190542Q3Q8WQPEER6Q" WeighvoteHostedZoneId="Z06182912S2R0YJ8WXV3U" Stage="production" --capabilities CAPABILITY_IAM
 
 Write-Host "✅ CloudFront and Route53 deployed successfully" -ForegroundColor Green
 

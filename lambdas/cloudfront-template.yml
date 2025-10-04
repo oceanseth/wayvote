@@ -7,6 +7,21 @@ Parameters:
     Description: 'API Gateway Rest API ID'
     Default: ''
   
+  S3BucketName:
+    Type: String
+    Description: 'S3 Bucket Name for website hosting'
+    Default: ''
+  
+  WayvoteHostedZoneId:
+    Type: String
+    Description: 'Route53 Hosted Zone ID for wayvote.org'
+    Default: ''
+  
+  WeighvoteHostedZoneId:
+    Type: String
+    Description: 'Route53 Hosted Zone ID for weighvote.org'
+    Default: ''
+  
   Stage:
     Type: String
     Description: 'Deployment stage'
@@ -21,7 +36,7 @@ Resources:
       CertificateArn: !Sub 'arn:aws:acm:us-east-1:${AWS::AccountId}:certificate/85043eab-f82f-484d-88cc-6d352db8123c'
       EndpointConfiguration:
         Types:
-          - REGIONAL
+          - EDGE
 
   # API Gateway Base Path Mapping
   ApiGatewayBasePathMapping:
@@ -44,15 +59,17 @@ Resources:
   # CloudFront Distribution
   CloudFrontDistribution:
     Type: AWS::CloudFront::Distribution
+    DeletionPolicy: Retain
     Properties:
       DistributionConfig:
+        Enabled: true
         Aliases:
           - wayvote.org
           - www.wayvote.org
         DefaultRootObject: index.html
         Origins:
           - Id: S3Origin
-            DomainName: www.wayvote.org.s3-website-us-east-1.amazonaws.com
+            DomainName: !Sub '${S3BucketName}.s3-website-us-east-1.amazonaws.com'
             CustomOriginConfig:
               HTTPPort: 80
               HTTPSPort: 443
@@ -97,17 +114,11 @@ Resources:
             ResponseCode: 200
             ResponsePagePath: /index.html
 
-  # Route53 Hosted Zone for wayvote.org
-  WayvoteHostedZone:
-    Type: AWS::Route53::HostedZone
-    Properties:
-      Name: wayvote.org
-
   # Route53 Record for wayvote.org (A record)
   WayvoteARecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !Ref WayvoteHostedZone
+      HostedZoneId: !Ref WayvoteHostedZoneId
       Name: wayvote.org
       Type: A
       AliasTarget:
@@ -118,24 +129,18 @@ Resources:
   WWWWayvoteARecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !Ref WayvoteHostedZone
+      HostedZoneId: !Ref WayvoteHostedZoneId
       Name: www.wayvote.org
       Type: A
       AliasTarget:
         DNSName: !GetAtt CloudFrontDistribution.DomainName
         HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
 
-  # Route53 Hosted Zone for weighvote.org
-  WeighvoteHostedZone:
-    Type: AWS::Route53::HostedZone
-    Properties:
-      Name: weighvote.org
-
   # Route53 Record for weighvote.org (redirect to wayvote.org)
   WeighvoteRedirectRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !Ref WeighvoteHostedZone
+      HostedZoneId: !Ref WeighvoteHostedZoneId
       Name: weighvote.org
       Type: A
       AliasTarget:
@@ -146,16 +151,8 @@ Outputs:
   CloudFrontDistributionId:
     Value: !Ref CloudFrontDistribution
     Export:
-      Name: wayvote-frontend-${Stage}-CloudFrontDistributionId
+      Name: !Sub 'wayvote-frontend-${Stage}-CloudFrontDistributionId'
   CloudFrontDistributionDomainName:
     Value: !GetAtt CloudFrontDistribution.DomainName
     Export:
-      Name: wayvote-frontend-${Stage}-CloudFrontDistributionDomainName
-  WayvoteHostedZoneId:
-    Value: !Ref WayvoteHostedZone
-    Export:
-      Name: wayvote-frontend-${Stage}-WayvoteHostedZoneId
-  WeighvoteHostedZoneId:
-    Value: !Ref WeighvoteHostedZone
-    Export:
-      Name: wayvote-frontend-${Stage}-WeighvoteHostedZoneId
+      Name: !Sub 'wayvote-frontend-${Stage}-CloudFrontDistributionDomainName'

@@ -93,15 +93,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Get API Gateway Rest API ID
-        id: get-api-id
+      - name: Get API Gateway Rest API ID and S3 Bucket Name
+        id: get-resources
         run: |
           API_ID=$(aws cloudformation describe-stacks \
             --stack-name wayvote-api-production \
             --query 'Stacks[0].Outputs[?OutputKey==`ApiGatewayRestApi`].OutputValue' \
             --output text)
+          BUCKET_NAME=$(aws cloudformation describe-stacks \
+            --stack-name wayvote-api-production \
+            --query 'Stacks[0].Outputs[?OutputKey==`WayvoteWebsiteBucketName`].OutputValue' \
+            --output text)
           echo "api-id=$API_ID" >> $GITHUB_OUTPUT
+          echo "bucket-name=$BUCKET_NAME" >> $GITHUB_OUTPUT
           echo "API Gateway Rest API ID: $API_ID"
+          echo "S3 Bucket Name: $BUCKET_NAME"
 
       - name: Deploy CloudFront and Route53
         run: |
@@ -110,7 +116,10 @@ jobs:
             --template-file cloudfront-template.yml \
             --stack-name wayvote-cloudfront-production \
             --parameter-overrides \
-              ApiGatewayRestApiId="${{ steps.get-api-id.outputs.api-id }}" \
+              ApiGatewayRestApiId="${{ steps.get-resources.outputs.api-id }}" \
+              S3BucketName="${{ steps.get-resources.outputs.bucket-name }}" \
+              WayvoteHostedZoneId="Z03190542Q3Q8WQPEER6Q" \
+              WeighvoteHostedZoneId="Z06182912S2R0YJ8WXV3U" \
               Stage="production" \
             --capabilities CAPABILITY_IAM
 

@@ -12,14 +12,21 @@ if [ ! -f "README.md" ]; then
     exit 1
 fi
 
-# Check if API Gateway ID exists
+# Check if required files exist
 if [ ! -f "api-gateway-id.txt" ]; then
     echo "❌ api-gateway-id.txt not found. Please run deploy-step1.sh first"
     exit 1
 fi
 
+if [ ! -f "s3-bucket-name.txt" ]; then
+    echo "❌ s3-bucket-name.txt not found. Please run deploy-step1.sh first"
+    exit 1
+fi
+
 API_ID=$(cat api-gateway-id.txt)
+BUCKET_NAME=$(cat s3-bucket-name.txt)
 echo "📡 Using API Gateway Rest API ID: $API_ID"
+echo "📡 Using S3 Bucket Name: $BUCKET_NAME"
 
 # Deploy CloudFront and Route53
 echo "☁️ Deploying CloudFront distribution and Route53..."
@@ -30,6 +37,9 @@ aws cloudformation deploy \
   --stack-name wayvote-cloudfront-production \
   --parameter-overrides \
     ApiGatewayRestApiId="$API_ID" \
+    S3BucketName="$BUCKET_NAME" \
+    WayvoteHostedZoneId="Z03190542Q3Q8WQPEER6Q" \
+    WeighvoteHostedZoneId="Z06182912S2R0YJ8WXV3U" \
     Stage="production" \
   --capabilities CAPABILITY_IAM
 
