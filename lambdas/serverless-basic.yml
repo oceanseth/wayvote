@@ -1,0 +1,116 @@
+service: wayvote-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    STAGE: ${self:provider.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+          Resource: "arn:aws:s3:::www.wayvote.org/*"
+        - Effect: Allow
+          Action:
+            - cloudfront:CreateInvalidation
+          Resource: "*"
+
+plugins:
+  - serverless-domain-manager
+  - serverless-s3-sync
+
+custom:
+  # Domain configuration
+  customDomain:
+    domainName: api.wayvote.org
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+    certificateName: 85043eab-f82f-484d-88cc-6d352db8123c
+    endpointType: 'regional'
+    securityPolicy: tls_1_2
+    autoDomain: false
+
+  # S3 configuration for static site
+  s3Sync:
+    - bucketName: www.wayvote.org
+      localDir: ../frontend/dist
+      deleteRemoved: true
+      params:
+        - index.html:
+            CacheControl: 'no-cache, no-store, must-revalidate'
+            ContentType: 'text/html'
+        - "*.js":
+            CacheControl: 'public, max-age=31536000'
+        - "*.css":
+            CacheControl: 'public, max-age=31536000'
+        - "*.png":
+            CacheControl: 'public, max-age=31536000'
+        - "*.jpg":
+            CacheControl: 'public, max-age=31536000'
+        - "*.ico":
+            CacheControl: 'public, max-age=31536000'
+
+functions:
+  api:
+    handler: api.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+      - http:
+          path: /
+          method: ANY
+          cors: true
+
+resources:
+  Resources:
+    # S3 bucket for static site hosting
+    WayvoteWebsiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: www.wayvote.org
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+          IgnorePublicAcls: false
+          RestrictPublicBuckets: false
+
+    # S3 bucket policy for public read access
+    WayvoteWebsiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref WayvoteWebsiteBucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: !Sub '${WayvoteWebsiteBucket}/*'
+
+  Outputs:
+    ApiGatewayRestApi:
+      Value: !Ref ApiGatewayRestApi
+      Export:
+        Name: wayvote-api-${self:provider.stage}-ApiGatewayRestApi
+    WayvoteWebsiteBucketName:
+      Value: !Ref WayvoteWebsiteBucket
+      Export:
+        Name: wayvote-frontend-${self:provider.stage}-WebsiteBucketName
+    ApiGatewayUrl:
+      Value: !Sub 'https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}'
+      Export:
+        Name: wayvote-api-${self:provider.stage}-ApiGatewayUrl

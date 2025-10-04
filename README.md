@@ -110,7 +110,12 @@ wayvote/
 ├── lambdas/                   # Lambda functions
 │   ├── api.js                 # Main Lambda handler
 │   ├── package.json
-│   └── serverless.yml         # Serverless configuration
+│   ├── serverless-basic.yml   # Basic serverless config (Lambda + S3)
+│   ├── cloudfront-template.yml # CloudFront + Route53 template
+│   └── serverless.yml         # Original full config (deprecated)
+├── deploy-step1.sh/.ps1       # Deploy basic infrastructure
+├── deploy-step2.sh/.ps1       # Deploy CloudFront + Route53
+├── deploy-step3.sh/.ps1       # Deploy frontend
 └── README.md
 ```
 
@@ -128,24 +133,46 @@ The project uses GitHub Actions for automatic deployment to production:
 
 ### Manual Deployment
 
-1. **Deploy Lambda functions**
+The deployment is now split into 3 steps to avoid circular dependencies:
+
+1. **Deploy basic infrastructure (Lambda + S3 + API Gateway)**
    ```bash
-   cd lambdas
-   npm run deploy:prod
+   ./deploy-step1.sh  # or .\deploy-step1.ps1 on Windows
    ```
 
-2. **Build and deploy frontend**
+2. **Deploy CloudFront and Route53**
    ```bash
-   cd frontend
+   ./deploy-step2.sh  # or .\deploy-step2.ps1 on Windows
+   ```
+
+3. **Build and deploy frontend**
+   ```bash
+   ./deploy-step3.sh  # or .\deploy-step3.ps1 on Windows
+   ```
+
+**Alternative: Manual step-by-step**
+   ```bash
+   # Step 1: Deploy Lambda and basic infrastructure
+   cd lambdas
+   serverless deploy --config serverless-basic.yml --stage production
+   
+   # Step 2: Deploy CloudFront (get API URL from step 1 output)
+   aws cloudformation deploy \
+     --template-file cloudfront-template.yml \
+     --stack-name wayvote-cloudfront-production \
+     --parameter-overrides ApiGatewayUrl="YOUR_API_URL" Stage="production" \
+     --capabilities CAPABILITY_IAM
+   
+   # Step 3: Build and deploy frontend
+   cd ../frontend
    npm run build
    cd ../lambdas
-   npx serverless s3sync --stage production
-   ```
-
-3. **Invalidate CloudFront cache**
-   ```bash
-   cd lambdas
-   npx serverless cloudfrontInvalidate --stage production
+   npx serverless s3sync --config serverless-basic.yml --stage production
+   
+   # Step 4: Invalidate CloudFront cache
+   aws cloudfront create-invalidation \
+     --distribution-id "YOUR_DISTRIBUTION_ID" \
+     --paths "/*"
    ```
 
 ## 🔧 Configuration
