@@ -1,0 +1,30 @@
+{
+  "name": "wayvote-api",
+  "version": "1.0.0",
+  "description": "WayVote API Lambda functions",
+  "main": "api.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "deploy:prod": "serverless deploy --stage production",
+    "remove": "serverless remove",
+    "logs": "serverless logs -f api",
+    "invoke": "serverless invoke -f api",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1490.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-domain-manager": "^7.0.0",
+    "serverless-s3-sync": "^3.2.0"
+  },
+  "keywords": [
+    "serverless",
+    "lambda",
+    "api",
+    "wayvote"
+  ],
+  "author": "WayVote Team",
+  "license": "MIT"
+}

@@ -1,0 +1,168 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ production ]
+  pull_request:
+    branches: [ production ]
+
+env:
+  NODE_VERSION: '18'
+  AWS_REGION: 'us-east-1'
+
+jobs:
+  deploy-lambda:
+    name: Deploy Lambda Functions
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: lambdas/package-lock.json
+
+      - name: Install Lambda dependencies
+        run: |
+          cd lambdas
+          npm ci
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy Lambda functions
+        run: |
+          cd lambdas
+          npm run deploy:prod
+
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/production'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist/
+
+  deploy-frontend:
+    name: Deploy Frontend to S3
+    runs-on: ubuntu-latest
+    needs: [deploy-lambda, build-frontend]
+    if: github.ref == 'refs/heads/production'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist/
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: lambdas/package-lock.json
+
+      - name: Install Lambda dependencies
+        run: |
+          cd lambdas
+          npm ci
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy frontend to S3
+        run: |
+          cd lambdas
+          npx serverless s3sync --stage production
+
+      - name: Invalidate CloudFront cache
+        run: |
+          cd lambdas
+          npx serverless cloudfrontInvalidate --stage production
+
+  test-api:
+    name: Test API Endpoints
+    runs-on: ubuntu-latest
+    needs: deploy-lambda
+    if: github.ref == 'refs/heads/production'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Wait for deployment
+        run: sleep 30
+
+      - name: Test API root endpoint
+        run: |
+          curl -f https://api.wayvote.org/ || exit 1
+
+      - name: Test API helloworld endpoint
+        run: |
+          response=$(curl -s -X POST https://api.wayvote.org/helloworld \
+            -H "Content-Type: application/json" \
+            -d '{"test": "data"}')
+          echo "$response" | grep -q "hello world" || exit 1
+
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [deploy-lambda, deploy-frontend, test-api]
+    if: always() && github.ref == 'refs/heads/production'
+    
+    steps:
+      - name: Notify success
+        if: needs.deploy-lambda.result == 'success' && needs.deploy-frontend.result == 'success' && needs.test-api.result == 'success'
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🌐 Frontend: https://wayvote.org"
+          echo "🔗 API: https://api.wayvote.org"
+          echo "📊 API Test: https://wayvote.org/api-test"
+
+      - name: Notify failure
+        if: needs.deploy-lambda.result == 'failure' || needs.deploy-frontend.result == 'failure' || needs.test-api.result == 'failure'
+        run: |
+          echo "❌ Deployment failed!"
+          echo "Check the logs above for details."
+          exit 1
