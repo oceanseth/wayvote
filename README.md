@@ -1,6 +1,34 @@
 # WayVote
 
-A modern, secure, and transparent democratic voting platform built with React, AWS Lambda, and serverless architecture.
+A browser plugin that gives users control over ranking algorithms on the sites they visit, starting with Reddit. When you upvote content, your self-reported and measured metrics allow others to weigh your votes according to their preferences.
+
+## Overview
+
+WayVote addresses a critical problem with today's internet: **lack of control over content curation**. Social media platforms like Reddit, Facebook, and Twitter use opaque algorithms to control what content you see, often prioritizing engagement over your mental wellness and authentic preferences.
+
+### The Problem
+
+Current social media algorithms:
+- Show content that makes you angry or depressed to maximize engagement
+- Use hidden ranking systems you can't understand or control
+- Allow bots and bad actors to game the system
+- Create echo chambers without your knowledge or consent
+- Prioritize advertiser interests over user wellbeing
+
+### The Solution
+
+WayVote gives you the power to:
+- **Control ranking algorithms** on sites you visit through a browser plugin
+- **Weight votes** based on user metrics (intelligence, expertise, authenticity)
+- **See transparent rankings** instead of hidden algorithmic decisions
+- **Create custom echo chambers** you can enter and exit at will
+- **Filter out bot votes** and low-quality content
+
+### Inspiration
+
+This project was inspired by [Seth Caldwell's vision](https://www.youtube.com/watch?v=T-tzHdSY3n0) for giving users control over content cultivation rather than being subject to corporate-controlled curation algorithms.
+
+> "There's a difference between curation and cultivation. Cultivation means you're combining two things together to create something new... If users were given power to cultivate and curate their feeds themselves, they would be much happier users." - Seth Caldwell
 
 ## 🌐 Live Sites
 

@@ -7,7 +7,8 @@ const About = () => {
         <div className="about-header">
           <h1>About WayVote</h1>
           <p className="lead">
-            Empowering democratic participation through secure, transparent, and accessible voting technology.
+            A browser plugin that gives you control over ranking algorithms on the sites you visit. 
+            Take back control of your content consumption and create the internet experience you want.
           </p>
         </div>
 
@@ -15,34 +16,35 @@ const About = () => {
           <div className="about-section">
             <h2>Our Mission</h2>
             <p>
-              WayVote is dedicated to revolutionizing the way communities make decisions. 
-              We believe that democracy should be accessible, transparent, and secure for everyone, 
-              regardless of their location or circumstances.
+              WayVote is dedicated to giving users control over their content consumption. 
+              We believe that you should have the power to decide how content is ranked and 
+              whose votes matter to you, not corporate algorithms.
             </p>
             <p>
-              Our platform combines cutting-edge technology with user-friendly design to create 
-              a voting experience that is both trustworthy and convenient.
+              Inspired by <a href="https://www.youtube.com/watch?v=T-tzHdSY3n0" target="_blank" rel="noopener noreferrer">Seth Caldwell's vision</a>, 
+              we're building tools that let you create custom echo chambers you can enter and exit at will, 
+              filter out bot manipulation, and see transparent rankings based on your own criteria.
             </p>
           </div>
 
           <div className="about-section">
-            <h2>Technology & Security</h2>
+            <h2>How It Works</h2>
             <div className="tech-features">
               <div className="tech-item">
-                <h3>🔐 End-to-End Encryption</h3>
-                <p>All votes are encrypted using industry-standard AES-256 encryption, ensuring complete privacy and security.</p>
+                <h3>🎯 Browser Plugin</h3>
+                <p>Install our browser extension to take control of ranking algorithms on Reddit and other sites you visit.</p>
               </div>
               <div className="tech-item">
-                <h3>⛓️ Blockchain Verification</h3>
-                <p>Vote integrity is verified through blockchain technology, providing an immutable audit trail.</p>
+                <h3>⚖️ Weighted Voting</h3>
+                <p>Your votes are weighted based on your metrics - intelligence tests, expertise, authenticity scores.</p>
               </div>
               <div className="tech-item">
-                <h3>🛡️ Multi-Factor Authentication</h3>
-                <p>Advanced authentication methods ensure only authorized voters can participate.</p>
+                <h3>🔍 Transparent Rankings</h3>
+                <p>See exactly why content is ranked the way it is and whose votes are influencing the results.</p>
               </div>
               <div className="tech-item">
-                <h3>📱 Cross-Platform Compatibility</h3>
-                <p>Access the platform from any device - desktop, tablet, or mobile - with full functionality.</p>
+                <h3>🎛️ Custom Filters</h3>
+                <p>Create custom echo chambers based on your preferences - toggle between different ranking criteria instantly.</p>
               </div>
             </div>
           </div>
@@ -50,14 +52,14 @@ const About = () => {
           <div className="about-section">
             <h2>Key Features</h2>
             <ul className="features-list">
-              <li>Real-time vote counting and results</li>
-              <li>Anonymous voting with voter verification</li>
-              <li>Comprehensive audit trails</li>
-              <li>Multi-language support</li>
-              <li>Accessibility compliance (WCAG 2.1)</li>
-              <li>Offline voting capabilities</li>
-              <li>Integration with existing systems</li>
-              <li>24/7 technical support</li>
+              <li>Control ranking algorithms on Reddit and other social platforms</li>
+              <li>Weight votes based on user intelligence, expertise, and authenticity</li>
+              <li>Filter out bot votes and low-quality content</li>
+              <li>Create custom echo chambers you can toggle between</li>
+              <li>See transparent rankings instead of hidden algorithms</li>
+              <li>Self-reported and measured user metrics</li>
+              <li>Browser plugin for seamless integration</li>
+              <li>Open source and community-driven development</li>
             </ul>
           </div>
 
@@ -65,36 +67,42 @@ const About = () => {
             <h2>Use Cases</h2>
             <div className="use-cases">
               <div className="use-case">
-                <h3>🏛️ Government Elections</h3>
-                <p>Secure, transparent elections for local, state, and national government positions.</p>
+                <h3>🤖 Bot Detection</h3>
+                <p>Filter out votes from likely bots and fake accounts to see authentic community sentiment.</p>
               </div>
               <div className="use-case">
-                <h3>🏢 Corporate Governance</h3>
-                <p>Board elections, shareholder voting, and corporate decision-making processes.</p>
+                <h3>🧠 Intelligence-Based Ranking</h3>
+                <p>See how content ranks when weighted by user intelligence test scores and critical thinking ability.</p>
               </div>
               <div className="use-case">
-                <h3>🎓 Educational Institutions</h3>
-                <p>Student government elections, faculty decisions, and academic policy voting.</p>
+                <h3>🎯 Expertise Filtering</h3>
+                <p>View content ranked by people with specific expertise - programmers for tech posts, doctors for medical content.</p>
               </div>
               <div className="use-case">
-                <h3>🏘️ Community Organizations</h3>
-                <p>HOA decisions, community board elections, and neighborhood initiatives.</p>
+                <h3>🔄 Echo Chamber Control</h3>
+                <p>Create custom echo chambers based on political views, interests, or any criteria you choose.</p>
               </div>
             </div>
           </div>
 
           <div className="about-section">
-            <h2>Compliance & Standards</h2>
+            <h2>The Vision</h2>
             <p>
-              WayVote meets and exceeds industry standards for security and accessibility:
+              As Seth Caldwell explains in his <a href="https://www.youtube.com/watch?v=T-tzHdSY3n0" target="_blank" rel="noopener noreferrer">vision video</a>, 
+              the internet is currently controlled by corporate algorithms that prioritize engagement over your wellbeing. 
+              These algorithms show you content that makes you angry, create echo chambers without your knowledge, 
+              and allow bots to manipulate what you see.
+            </p>
+            <p>
+              WayVote gives you the power to:
             </p>
             <ul className="compliance-list">
-              <li>SOC 2 Type II Certified</li>
-              <li>ISO 27001 Information Security Management</li>
-              <li>WCAG 2.1 AA Accessibility Standards</li>
-              <li>GDPR Compliant</li>
-              <li>HIPAA Ready</li>
-              <li>FISMA Moderate Compliance</li>
+              <li>See transparent rankings instead of hidden algorithms</li>
+              <li>Weight votes based on user metrics and authenticity</li>
+              <li>Create custom echo chambers you can enter and exit at will</li>
+              <li>Filter out bot manipulation and low-quality content</li>
+              <li>Take control of your content consumption experience</li>
+              <li>Build a more intelligent and authentic internet</li>
             </ul>
           </div>
         </div>
