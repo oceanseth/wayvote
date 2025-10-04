@@ -61,7 +61,7 @@ custom:
 
   # CloudFront configuration
   cloudFront:
-    distributionId: ${cf:wayvote-frontend-${self:provider.stage}.CloudFrontDistributionId}
+    distributionId: ${env:CLOUDFRONT_DISTRIBUTION_ID, ''}
     paths:
       - "/*"
 

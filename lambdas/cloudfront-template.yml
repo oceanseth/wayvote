@@ -1,0 +1,145 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFront distribution for WayVote'
+
+Parameters:
+  ApiGatewayUrl:
+    Type: String
+    Description: 'API Gateway URL'
+    Default: ''
+  
+  Stage:
+    Type: String
+    Description: 'Deployment stage'
+    Default: 'production'
+
+Resources:
+  # CloudFront Origin Access Control
+  WayvoteOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: wayvote-oac-${Stage}
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # CloudFront Distribution
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - wayvote.org
+          - www.wayvote.org
+        DefaultRootObject: index.html
+        Origins:
+          - Id: S3Origin
+            DomainName: www.wayvote.org.s3-website-us-east-1.amazonaws.com
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginProtocolPolicy: http-only
+          - Id: APIGatewayOrigin
+            DomainName: !Sub 
+              - '${ApiGatewayUrl}'
+              - ApiGatewayUrl: !Ref ApiGatewayUrl
+            CustomOriginConfig:
+              HTTPPort: 443
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # Managed-CachingDisabled
+          OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf # Managed-CORS-S3Origin
+        CacheBehaviors:
+          - PathPattern: /api/*
+            TargetOriginId: APIGatewayOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad # Managed-CachingDisabled
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+              - PUT
+              - POST
+              - PATCH
+              - DELETE
+            CachedMethods:
+              - GET
+              - HEAD
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: !Sub 'arn:aws:acm:us-east-1:${AWS::AccountId}:certificate/85043eab-f82f-484d-88cc-6d352db8123c'
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+
+  # Route53 Hosted Zone for wayvote.org
+  WayvoteHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: wayvote.org
+
+  # Route53 Record for wayvote.org (A record)
+  WayvoteARecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref WayvoteHostedZone
+      Name: wayvote.org
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
+
+  # Route53 Record for www.wayvote.org (A record)
+  WWWWayvoteARecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref WayvoteHostedZone
+      Name: www.wayvote.org
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
+
+  # Route53 Hosted Zone for weighvote.org
+  WeighvoteHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: weighvote.org
+
+  # Route53 Record for weighvote.org (redirect to wayvote.org)
+  WeighvoteRedirectRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref WeighvoteHostedZone
+      Name: weighvote.org
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2 # CloudFront hosted zone ID
+
+Outputs:
+  CloudFrontDistributionId:
+    Value: !Ref CloudFrontDistribution
+    Export:
+      Name: wayvote-frontend-${Stage}-CloudFrontDistributionId
+  CloudFrontDistributionDomainName:
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: wayvote-frontend-${Stage}-CloudFrontDistributionDomainName
+  WayvoteHostedZoneId:
+    Value: !Ref WayvoteHostedZone
+    Export:
+      Name: wayvote-frontend-${Stage}-WayvoteHostedZoneId
+  WeighvoteHostedZoneId:
+    Value: !Ref WeighvoteHostedZone
+    Export:
+      Name: wayvote-frontend-${Stage}-WeighvoteHostedZoneId
