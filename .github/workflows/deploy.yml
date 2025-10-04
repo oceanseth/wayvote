@@ -93,15 +93,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Get API Gateway URL
-        id: get-api-url
+      - name: Get API Gateway Rest API ID
+        id: get-api-id
         run: |
-          API_URL=$(aws cloudformation describe-stacks \
+          API_ID=$(aws cloudformation describe-stacks \
             --stack-name wayvote-api-production \
-            --query 'Stacks[0].Outputs[?OutputKey==`ApiGatewayUrl`].OutputValue' \
+            --query 'Stacks[0].Outputs[?OutputKey==`ApiGatewayRestApi`].OutputValue' \
             --output text)
-          echo "api-url=$API_URL" >> $GITHUB_OUTPUT
-          echo "API Gateway URL: $API_URL"
+          echo "api-id=$API_ID" >> $GITHUB_OUTPUT
+          echo "API Gateway Rest API ID: $API_ID"
 
       - name: Deploy CloudFront and Route53
         run: |
@@ -110,7 +110,7 @@ jobs:
             --template-file cloudfront-template.yml \
             --stack-name wayvote-cloudfront-production \
             --parameter-overrides \
-              ApiGatewayUrl="${{ steps.get-api-url.outputs.api-url }}" \
+              ApiGatewayRestApiId="${{ steps.get-api-id.outputs.api-id }}" \
               Stage="production" \
             --capabilities CAPABILITY_IAM
 
