@@ -11,6 +11,7 @@ class WayVotePopup {
     
     this.metrics = { ...this.defaultMetrics };
     this.isEnabled = true;
+    this.removePromoted = true;
     
     this.init();
   }
@@ -31,7 +32,7 @@ class WayVotePopup {
 
   async loadSettings() {
     try {
-      const result = await chrome.storage.sync.get(['wayvoteMetrics', 'wayvoteEnabled']);
+      const result = await chrome.storage.sync.get(['wayvoteMetrics', 'wayvoteEnabled', 'wayvoteRemovePromoted']);
       
       if (result.wayvoteMetrics) {
         this.metrics = { ...this.defaultMetrics, ...result.wayvoteMetrics };
@@ -39,6 +40,10 @@ class WayVotePopup {
       
       if (result.wayvoteEnabled !== undefined) {
         this.isEnabled = result.wayvoteEnabled;
+      }
+      
+      if (result.wayvoteRemovePromoted !== undefined) {
+        this.removePromoted = result.wayvoteRemovePromoted;
       }
     } catch (error) {
       console.error('WayVote: Error loading settings:', error);
@@ -49,7 +54,8 @@ class WayVotePopup {
     try {
       await chrome.storage.sync.set({
         wayvoteMetrics: this.metrics,
-        wayvoteEnabled: this.isEnabled
+        wayvoteEnabled: this.isEnabled,
+        wayvoteRemovePromoted: this.removePromoted
       });
     } catch (error) {
       console.error('WayVote: Error saving settings:', error);
@@ -57,37 +63,76 @@ class WayVotePopup {
   }
 
   initializeUI() {
-    // Set initial toggle state
+    // Set initial toggle states
     const enabledToggle = document.getElementById('enabledToggle');
-    enabledToggle.checked = this.isEnabled;
+    if (enabledToggle) {
+      enabledToggle.checked = this.isEnabled;
+    }
+    
+    const removePromotedToggle = document.getElementById('removePromotedToggle');
+    if (removePromotedToggle) {
+      removePromotedToggle.checked = this.removePromoted;
+    }
   }
 
   setupEventListeners() {
     // Enable/disable toggle
     const enabledToggle = document.getElementById('enabledToggle');
-    enabledToggle.addEventListener('change', (e) => {
-      this.isEnabled = e.target.checked;
-      this.saveSettings();
-      this.sendMessageToContentScript('toggleEnabled', { enabled: this.isEnabled });
-    });
+    if (enabledToggle) {
+      enabledToggle.addEventListener('change', (e) => {
+        this.isEnabled = e.target.checked;
+        this.saveSettings();
+        this.sendMessageToContentScript('toggleEnabled', { enabled: this.isEnabled });
+        this.settingsChanged = true; // Mark that settings have changed
+      });
+    }
+
+    // Remove promoted content toggle
+    const removePromotedToggle = document.getElementById('removePromotedToggle');
+    if (removePromotedToggle) {
+      removePromotedToggle.addEventListener('change', (e) => {
+        this.removePromoted = e.target.checked;
+        this.saveSettings();
+        this.sendMessageToContentScript('toggleRemovePromoted', { removePromoted: this.removePromoted });
+        this.settingsChanged = true; // Mark that settings have changed
+      });
+    }
 
     // Apply button
     const applyBtn = document.getElementById('applyBtn');
-    applyBtn.addEventListener('click', () => {
-      this.applySettings();
+    if (applyBtn) {
+      applyBtn.addEventListener('click', () => {
+        this.applySettings();
+      });
+    }
+
+    // Add beforeunload event to detect popup closing
+    window.addEventListener('beforeunload', () => {
+      this.checkForChanges();
+    });
+
+    // Also add visibility change event as backup
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.checkForChanges();
+      }
     });
 
     // Reset button
     const resetBtn = document.getElementById('resetBtn');
-    resetBtn.addEventListener('click', () => {
-      this.resetToDefaults();
-    });
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        this.resetToDefaults();
+      });
+    }
 
     // Add metric button
     const addMetricBtn = document.getElementById('addMetricBtn');
-    addMetricBtn.addEventListener('click', () => {
-      this.showAddMetricDialog();
-    });
+    if (addMetricBtn) {
+      addMetricBtn.addEventListener('click', () => {
+        this.showAddMetricDialog();
+      });
+    }
   }
 
   renderMetrics() {
@@ -142,6 +187,7 @@ class WayVotePopup {
       input.value = newValue;
       valueDisplay.textContent = newValue;
       this.metrics[name] = newValue;
+      this.settingsChanged = true; // Mark that settings have changed
     });
 
     input.addEventListener('input', (e) => {
@@ -152,6 +198,7 @@ class WayVotePopup {
       slider.value = newValue;
       valueDisplay.textContent = newValue;
       this.metrics[name] = newValue;
+      this.settingsChanged = true; // Mark that settings have changed
     });
 
     return div;
@@ -172,6 +219,9 @@ class WayVotePopup {
       
       // Send to content script
       await this.sendMessageToContentScript('updateMetrics', { metrics: this.metrics });
+      
+      // Reset the settings changed flag since we just applied
+      this.settingsChanged = false;
       
       // Show success feedback
       applyBtn.textContent = 'Applied!';
@@ -218,6 +268,21 @@ class WayVotePopup {
       }
     } catch (error) {
       console.error('WayVote: Error sending message to content script:', error);
+    }
+  }
+
+  // Track if settings have changed since last apply
+  settingsChanged = false;
+
+  // Check if current metrics differ from saved metrics
+  checkForChanges() {
+    // This will be called when the popup is about to close
+    if (this.settingsChanged) {
+      console.log('WayVote: Settings changed, triggering API re-request');
+      this.sendMessageToContentScript('popupClosed', { 
+        metrics: this.metrics,
+        removePromoted: this.removePromoted
+      });
     }
   }
 }

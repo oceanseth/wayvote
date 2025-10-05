@@ -29,6 +29,7 @@
 ### Extension Not Loading
 - Make sure you selected the `chrome_extension` folder (not the parent directory)
 - Check that all files are present in the folder
+- Ensure PNG icon files exist in the `icons/` folder (icon16.png, icon32.png, icon48.png, icon128.png)
 - Try refreshing the extensions page
 
 ### Extension Not Working on Reddit

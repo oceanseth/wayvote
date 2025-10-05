@@ -27,13 +27,19 @@ chrome.runtime.onInstalled.addListener((details) => {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url) {
     if (tab.url.includes('reddit.com')) {
-      // Ensure content script is injected
-      chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        files: ['content.js']
-      }).catch(error => {
-        // Content script might already be injected, ignore error
-        console.log('WayVote: Content script injection skipped (already present)');
+      // Check if content script is already injected to avoid duplicates
+      chrome.tabs.sendMessage(tabId, { action: 'ping' }, (response) => {
+        if (chrome.runtime.lastError) {
+          // Content script not present, inject it
+          chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            files: ['content.js']
+          }).catch(error => {
+            console.log('WayVote: Content script injection failed:', error);
+          });
+        } else {
+          console.log('WayVote: Content script already present');
+        }
       });
     }
   }
@@ -76,8 +82,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Handle extension icon click
 chrome.action.onClicked.addListener((tab) => {
   if (tab.url && tab.url.includes('reddit.com')) {
-    // Open popup (handled by manifest action)
-    console.log('WayVote: Icon clicked on Reddit page');
+    // Send message to content script to toggle modal
+    chrome.tabs.sendMessage(tab.id, { action: 'toggleModal' }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.log('WayVote: Content script not ready, injecting...');
+        // If content script isn't ready, inject it first
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['content.js']
+        }).then(() => {
+          // Wait a bit for script to initialize, then send message
+          setTimeout(() => {
+            chrome.tabs.sendMessage(tab.id, { action: 'toggleModal' });
+          }, 100);
+        });
+      } else {
+        console.log('WayVote: Modal toggled successfully');
+      }
+    });
   } else {
     // Open WayVote website if not on Reddit
     chrome.tabs.create({

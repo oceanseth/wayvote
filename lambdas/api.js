@@ -45,6 +45,21 @@ exports.handler = async (event, context) => {
     // Route handling
     const pathSegments = path.split('/').filter(segment => segment);
     
+    // Handle /getRankings endpoint
+    if (pathSegments.includes('getRankings')) {
+      return handleGetRankings(httpMethod, body);
+    }
+    
+    // Handle /upVote endpoint
+    if (pathSegments.includes('upVote')) {
+      return handleUpVote(httpMethod, body);
+    }
+    
+    // Handle /downVote endpoint
+    if (pathSegments.includes('downVote')) {
+      return handleDownVote(httpMethod, body);
+    }
+    
     // Handle /helloworld endpoint
     if (pathSegments.includes('helloworld')) {
       return handleHelloWorld(httpMethod, body);
@@ -56,6 +71,9 @@ exports.handler = async (event, context) => {
         message: 'WayVote API is running',
         version: '1.0.0',
         endpoints: {
+          'POST /getRankings': 'Get rankings for content IDs',
+          'POST /upVote': 'Upvote content',
+          'POST /downVote': 'Downvote content',
           'POST /helloworld': 'Test endpoint that returns posted content'
         }
       });
@@ -65,7 +83,7 @@ exports.handler = async (event, context) => {
     return createResponse(404, {
       error: 'Not Found',
       message: `Route ${path} not found`,
-      availableRoutes: ['/helloworld']
+      availableRoutes: ['/getRankings', '/upVote', '/downVote', '/helloworld']
     });
     
   } catch (error) {
@@ -75,6 +93,66 @@ exports.handler = async (event, context) => {
       message: 'An unexpected error occurred'
     });
   }
+};
+
+// Handle /getRankings endpoint
+const handleGetRankings = (httpMethod, body) => {
+  if (httpMethod !== 'POST') {
+    return createResponse(405, { error: 'Method not allowed' });
+  }
+  
+  const requestData = parseBody(body);
+  if (!requestData || !requestData.ids || !Array.isArray(requestData.ids)) {
+    return createResponse(400, { error: 'Invalid request data. Expected { ids: string[] }' });
+  }
+  
+  // Generate random rankings for each ID
+  const rankings = requestData.ids.map(id => ({
+    contentId: id,
+    rank: Math.floor(Math.random() * 1000) + 1 // Random rank between 1-1000
+  }));
+  
+  return createResponse(200, rankings);
+};
+
+// Handle /upVote endpoint
+const handleUpVote = (httpMethod, body) => {
+  if (httpMethod !== 'POST') {
+    return createResponse(405, { error: 'Method not allowed' });
+  }
+  
+  const requestData = parseBody(body);
+  if (!requestData || !requestData.contentId) {
+    return createResponse(400, { error: 'Invalid request data. Expected { contentId: string }' });
+  }
+  
+  // For now, just return success
+  return createResponse(200, { 
+    success: true, 
+    message: 'Upvote recorded',
+    contentId: requestData.contentId,
+    timestamp: new Date().toISOString()
+  });
+};
+
+// Handle /downVote endpoint
+const handleDownVote = (httpMethod, body) => {
+  if (httpMethod !== 'POST') {
+    return createResponse(405, { error: 'Method not allowed' });
+  }
+  
+  const requestData = parseBody(body);
+  if (!requestData || !requestData.contentId) {
+    return createResponse(400, { error: 'Invalid request data. Expected { contentId: string }' });
+  }
+  
+  // For now, just return success
+  return createResponse(200, { 
+    success: true, 
+    message: 'Downvote recorded',
+    contentId: requestData.contentId,
+    timestamp: new Date().toISOString()
+  });
 };
 
 // Handle /helloworld endpoint

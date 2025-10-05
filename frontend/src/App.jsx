@@ -42,7 +42,7 @@ function App() {
       </main>
       <footer className="footer">
         <div className="container">
-          <p>&copy; 2024 WayVote. All rights reserved.</p>
+          <p>&copy; 2025 WayVote. All rights reserved.</p>
           <p>API Status: <span className={`status ${apiStatus}`}>{apiStatus}</span></p>
         </div>
       </footer>
