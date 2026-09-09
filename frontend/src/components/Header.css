@@ -1,95 +1,256 @@
-.header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 1rem 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+/* Masthead: thin utility strip over a white bar with a rule beneath —
+   the newspaper/institution pattern rather than a coloured product header. */
+
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
 }
 
-.header-content {
+.masthead-strip {
+  background: var(--ink-950);
+  color: var(--ink-400);
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+}
+
+.masthead-strip-inner {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  gap: var(--sp-4);
+  min-height: 2.125rem;
 }
 
-.logo {
-  font-size: 1.8rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: white;
-  transition: opacity 0.3s ease;
-}
-
-.logo:hover {
-  opacity: 0.8;
-  text-decoration: none;
-}
-
-.nav {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
+.masthead-strip p {
   margin: 0;
-  padding: 0;
+  min-width: 0; /* let the tagline shrink instead of forcing page overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.nav a {
-  color: white;
+.masthead-strip a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--ink-300);
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  flex: none;
+  white-space: nowrap;
 }
 
-.nav a:hover {
-  background-color: rgba(255,255,255,0.1);
-  text-decoration: none;
+.masthead-strip a:hover {
+  color: #fff;
 }
 
-.api-status {
+/* Accent rule under the masthead: ink across the bar, breaking to oxblood at
+   the right. Reads as an institutional letterhead rule rather than a shadow. */
+.masthead-bar {
+  border-bottom: 3px solid var(--ink-900);
+  border-image: linear-gradient(to right, var(--ink-900) 0 72%, var(--red-700) 72% 100%) 1;
+  box-shadow: var(--shadow-sm);
+}
+
+.masthead-inner {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  min-height: var(--header-h);
 }
 
-.status-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+/* --- Wordmark ----------------------------------------------------------- */
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  text-decoration: none;
+  color: var(--ink-900);
+}
+
+.wordmark svg {
+  color: var(--ink-900);
+  flex: none;
+}
+
+.wordmark-text {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.wordmark-text small {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin-top: 2px;
+}
+
+/* --- Navigation --------------------------------------------------------- */
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+}
+
+.primary-nav ul {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+  list-style: none;
+}
+
+.primary-nav a:not(.btn) {
+  position: relative;
   display: inline-block;
+  padding-block: 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink-700);
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.status-indicator.connected {
-  background-color: #28a745;
+.primary-nav a:not(.btn)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.15rem;
+  height: 2px;
+  background: var(--red-700);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.18s ease;
 }
 
-.status-indicator.error {
-  background-color: #dc3545;
+.primary-nav a:not(.btn):hover {
+  color: var(--ink-900);
 }
 
-.status-indicator.checking {
-  background-color: #ffc107;
+.primary-nav a:not(.btn):hover::after,
+.primary-nav a.is-active::after {
+  transform: scaleX(1);
 }
 
-.status-text {
-  font-size: 0.8rem;
-  opacity: 0.9;
+.primary-nav a.is-active {
+  color: var(--ink-900);
+  font-weight: 600;
 }
 
-@media (max-width: 768px) {
-  .header-content {
+.masthead-cta {
+  padding: 0.7rem 1.15rem;
+  font-size: 0.875rem;
+}
+
+/* --- Mobile toggle ------------------------------------------------------ */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  padding: 0.6rem;
+  cursor: pointer;
+  color: var(--ink-900);
+}
+
+.nav-toggle-bars {
+  display: block;
+  width: 20px;
+  height: 14px;
+  position: relative;
+}
+
+.nav-toggle-bars span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle-bars span:nth-child(1) {
+  top: 0;
+}
+
+.nav-toggle-bars span:nth-child(2) {
+  top: 6px;
+}
+
+.nav-toggle-bars span:nth-child(3) {
+  top: 12px;
+}
+
+.nav-toggle-bars.is-open span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav-toggle-bars.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle-bars.is-open span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+@media (max-width: 860px) {
+  .nav-toggle {
+    display: block;
+    order: 2;
+  }
+
+  .primary-nav {
+    order: 3;
+    display: none;
+    width: 100%;
     flex-direction: column;
-    gap: 1rem;
+    align-items: stretch;
+    gap: var(--sp-2);
+    padding-block: var(--sp-4) var(--sp-5);
+    border-top: 1px solid var(--line);
   }
-  
-  .nav {
-    gap: 1rem;
+
+  .primary-nav.is-open {
+    display: flex;
   }
-  
-  .api-status {
-    order: -1;
+
+  .primary-nav ul {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .primary-nav li + li {
+    border-top: 1px solid var(--line);
+  }
+
+  .primary-nav a:not(.btn) {
+    padding-block: var(--sp-4);
+    font-size: var(--step-1);
+  }
+
+  .primary-nav a:not(.btn)::after {
+    display: none;
+  }
+
+  .masthead-inner {
+    flex-wrap: wrap;
+  }
+
+  .masthead-cta {
+    margin-top: var(--sp-3);
+    justify-content: center;
   }
 }
