@@ -27,12 +27,23 @@ API_ID=$(aws cloudformation describe-stacks \
 
 echo "📡 API Gateway Rest API ID: $API_ID"
 
-# Save the API ID for step 2
+# Get the S3 Bucket Name
+echo "🔍 Getting S3 Bucket Name..."
+BUCKET_NAME=$(aws cloudformation describe-stacks \
+  --stack-name wayvote-api-production \
+  --query 'Stacks[0].Outputs[?OutputKey==`WayvoteWebsiteBucketName`].OutputValue' \
+  --output text)
+
+echo "📡 S3 Bucket Name: $BUCKET_NAME"
+
+# Save the values for step 2
 echo "$API_ID" > ../api-gateway-id.txt
-echo "💾 API Gateway Rest API ID saved to api-gateway-id.txt"
+echo "$BUCKET_NAME" > ../s3-bucket-name.txt
+echo "💾 API Gateway Rest API ID and S3 Bucket Name saved"
 
 echo ""
 echo "✅ Step 1 completed successfully!"
 echo "📡 API Gateway Rest API ID: $API_ID"
+echo "📡 S3 Bucket Name: $BUCKET_NAME"
 echo ""
 echo "Next: Run ./deploy-step2.sh to deploy CloudFront and Route53"

@@ -1,6 +1,34 @@
 # WayVote
 
-A modern, secure, and transparent democratic voting platform built with React, AWS Lambda, and serverless architecture.
+A browser plugin that gives users control over ranking algorithms on the sites they visit, starting with Reddit. When you upvote content, your self-reported and measured metrics allow others to weigh your votes according to their preferences.
+
+## Overview
+
+WayVote addresses a critical problem with today's internet: **lack of control over content curation**. Social media platforms like Reddit, Facebook, and Twitter use opaque algorithms to control what content you see, often prioritizing engagement over your mental wellness and authentic preferences.
+
+### The Problem
+
+Current social media algorithms:
+- Show content that makes you angry or depressed to maximize engagement
+- Use hidden ranking systems you can't understand or control
+- Allow bots and bad actors to game the system
+- Create echo chambers without your knowledge or consent
+- Prioritize advertiser interests over user wellbeing
+
+### The Solution
+
+WayVote gives you the power to:
+- **Control ranking algorithms** on sites you visit through a browser plugin
+- **Weight votes** based on user metrics (intelligence, expertise, authenticity)
+- **See transparent rankings** instead of hidden algorithmic decisions
+- **Create custom echo chambers** you can enter and exit at will
+- **Filter out bot votes** and low-quality content
+
+### Inspiration
+
+This project was inspired by [Seth Caldwell's vision](https://www.youtube.com/watch?v=T-tzHdSY3n0) for giving users control over content cultivation rather than being subject to corporate-controlled curation algorithms.
+
+> "There's a difference between curation and cultivation. Cultivation means you're combining two things together to create something new... If users were given power to cultivate and curate their feeds themselves, they would be much happier users." - Seth Caldwell
 
 ## 🌐 Live Sites
 
@@ -69,9 +97,110 @@ A modern, secure, and transparent democratic voting platform built with React, A
    ```
 
 ### API Endpoints
+The baseurl of the api is api.wayvote.org
 
-- `GET /api/` - API information and available endpoints
-- `POST /api/helloworld` - Test endpoint that returns posted content
+- `GET /` - API information and available endpoints
+- `POST /helloworld` - Test endpoint that returns posted content
+- `POST /getRankings` - Get rankings for a set of content Ids
+
+#### Voting System Endpoints
+
+**Get Rankings**
+```http
+POST /api/getRankings
+Content-Type: application/json
+
+{
+  "ids": ["content1", "content2", "content3"],
+  "customRanking": [
+    {  "IQ": 10 },
+    {  "Critial_Thinking": 5 }
+  ]
+}
+```
+
+
+**Response:**
+```json
+[
+  {
+    "contentId": "content1",
+    "rank": 1
+  },
+  {
+    "contentId": "content2", 
+    "rank": 2
+  },
+  {
+    "contentId": "content3",
+    "rank": 3
+  }
+]
+```
+
+**Upvote Content**
+```http
+POST /api/upVote
+Content-Type: application/json
+
+{
+  "contentId": "content1"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
+
+**Downvote Content**
+```http
+POST /api/downVote
+Content-Type: application/json
+
+{
+  "contentId": "content1"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
+
+#### Custom Ranking Type
+
+The `customRanking` parameter is an array of objects with the following structure:
+
+```typescript
+interface CustomRanking {
+  weighName: string;    // Name of the ranking criteria (e.g., "IQ", "Experience", "Popularity")
+  weighValue: number;   // Weight value for this criteria (higher = more important)
+}
+```
+
+**Example:**
+```json
+[
+  {
+    "weighName": "IQ",
+    "weighValue": 10
+  },
+  {
+    "weighName": "Experience", 
+    "weighValue": 5
+  },
+  {
+    "weighName": "Popularity",
+    "weighValue": 3
+  }
+]
+```
+
 
 Example API call:
 ```bash
@@ -97,6 +226,17 @@ wayvote/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml          # GitHub Actions deployment
+├── chrome_extension/           # Chrome browser extension
+│   ├── manifest.json          # Extension configuration
+│   ├── content.js             # Reddit integration script
+│   ├── content.css            # Extension styles
+│   ├── popup.html             # Settings popup interface
+│   ├── popup.css              # Popup styles
+│   ├── popup.js               # Popup functionality
+│   ├── background.js          # Background service worker
+│   ├── icons/                 # Extension icons
+│   ├── README.md              # Extension documentation
+│   └── INSTALL.md             # Installation guide
 ├── frontend/                   # React frontend
 │   ├── public/
 │   │   └── index.html
@@ -192,6 +332,12 @@ Set these in your GitHub repository secrets:
 
 ## 🧪 Testing
 
+### Chrome Extension Testing
+1. **Install the extension** (see `chrome_extension/INSTALL.md`)
+2. **Navigate to Reddit** and open the extension popup
+3. **Configure metrics** and test post reordering
+4. **Test custom voting** by clicking the new vote buttons
+
 ### Frontend Testing
 ```bash
 cd frontend
@@ -255,6 +401,14 @@ curl -X POST https://api.wayvote.org/helloworld \
 - ✅ SSL/TLS encryption
 - ✅ Automatic deployments
 - ✅ Domain redirects
+
+### Chrome Extension
+- ✅ Reddit post detection and ID extraction
+- ✅ Custom metric configuration with sliders
+- ✅ Real-time post reordering based on rankings
+- ✅ Custom voting system integration
+- ✅ API integration with WayVote backend
+- ✅ Settings persistence and sync
 
 ## 🔒 Security
 

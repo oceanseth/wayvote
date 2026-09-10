@@ -1,0 +1,427 @@
+﻿/* WayVote Chrome Extension - Content Styles */
+
+.wayvote-voting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+  min-width: 60px;
+}
+
+.wayvote-vote-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.wayvote-upvote,
+.wayvote-downvote {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.wayvote-upvote:hover {
+  background: #ff4500;
+  color: white;
+  border-color: #ff4500;
+}
+
+.wayvote-downvote:hover {
+  background: #7193ff;
+  color: white;
+  border-color: #7193ff;
+}
+
+.wayvote-count {
+  font-size: 12px;
+  font-weight: bold;
+  color: #1a1a1b;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* WayVote Navigation Button */
+#wayvote-nav-button {
+  width: 40px;
+  height: 40px;
+  margin-left: 8px;
+  cursor: pointer;
+  position: relative;
+}
+
+.wayvote-nav-btn {
+  width: 100%;
+  height: 100%;
+  background: #ff4500;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.wayvote-nav-btn:hover {
+  background: #ff5722;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.wayvote-icon {
+  font-size: 20px;
+  color: white;
+}
+
+.wayvote-status {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.wayvote-status.enabled {
+  background: #4caf50;
+}
+
+.wayvote-status.disabled {
+  background: #f44336;
+}
+
+/* WayVote Settings Modal */
+#wayvote-settings-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+}
+
+.wayvote-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.wayvote-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: wayvote-modal-appear 0.3s ease;
+}
+
+@keyframes wayvote-modal-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.wayvote-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.wayvote-modal-header h2 {
+  margin: 0;
+  color: #1a1a1b;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.wayvote-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.wayvote-modal-close:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.wayvote-modal-content {
+  padding: 24px;
+}
+
+.wayvote-toggle {
+  margin-bottom: 24px;
+}
+
+.wayvote-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #1a1a1b;
+  cursor: pointer;
+}
+
+.wayvote-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #ff4500;
+}
+
+.wayvote-metrics h3 {
+  margin: 0 0 16px 0;
+  color: #1a1a1b;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.wayvote-metric {
+  margin-bottom: 16px;
+}
+
+.wayvote-metric label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.wayvote-metric-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wayvote-slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: #e1e5e9;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.wayvote-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff4500;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.wayvote-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ff4500;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.wayvote-input {
+  width: 60px;
+  padding: 6px 8px;
+  border: 1px solid #e1e5e9;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.wayvote-input:focus {
+  outline: none;
+  border-color: #ff4500;
+  box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.1);
+}
+
+.wayvote-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.wayvote-apply-btn {
+  flex: 1;
+  padding: 12px;
+  background: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wayvote-apply-btn:hover {
+  background: #ff5722;
+  transform: translateY(-1px);
+}
+
+.wayvote-close-btn {
+  flex: 1;
+  padding: 12px;
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wayvote-close-btn:hover {
+  background: #e9ecef;
+  border-color: #ccc;
+}
+
+/* WayVote indicator for processed posts */
+[data-wayvote-processed] {
+  position: relative;
+}
+
+[data-wayvote-processed]::before {
+  content: "ðŸŽ¯";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 12px;
+  opacity: 0.7;
+  z-index: 1000;
+}
+
+/* Animation for reordered posts */
+.wayvote-reordering {
+  transition: transform 0.3s ease;
+}
+
+/* Loading indicator */
+.wayvote-loading {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #ff4500;
+  border-radius: 50%;
+  animation: wayvote-spin 1s linear infinite;
+}
+
+@keyframes wayvote-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Tooltip for WayVote elements */
+.wayvote-tooltip {
+  position: relative;
+}
+
+.wayvote-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10001;
+}
+
+.wayvote-tooltip:hover::after {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .wayvote-modal {
+    margin: 10px;
+    max-height: 90vh;
+  }
+  
+  .wayvote-modal-content {
+    padding: 16px;
+  }
+  
+  .wayvote-modal-actions {
+    flex-direction: column;
+  }
+  
+  #wayvote-nav-button {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .wayvote-icon {
+    font-size: 18px;
+  }
+  
+  .wayvote-voting {
+    min-width: 50px;
+    padding: 6px;
+  }
+  
+  .wayvote-upvote,
+  .wayvote-downvote {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+}

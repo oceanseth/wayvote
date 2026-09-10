@@ -1,0 +1,11 @@
+{
+  "name": "wayvote-redirect-lambda",
+  "version": "1.0.0",
+  "description": "Lambda@Edge function for redirecting weighvote.org to wayvote.org",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "zip -r redirect-function.zip index.js && aws lambda update-function-code --function-name wayvote-redirect-production --zip-file fileb://redirect-function.zip"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

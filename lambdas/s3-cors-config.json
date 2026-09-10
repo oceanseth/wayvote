@@ -1,0 +1,22 @@
+{
+    "CORSRules": [
+        {
+            "AllowedHeaders": [
+                "*"
+            ],
+            "AllowedMethods": [
+                "PUT",
+                "POST",
+                "GET"
+            ],
+            "AllowedOrigins": [
+                "http://localhost:3003",
+                "https://www.wayvote.org"
+            ],
+            "ExposeHeaders": [
+                "ETag"
+            ],
+            "MaxAgeSeconds": 3000
+        }
+    ]
+}
